@@ -13,7 +13,7 @@ This project demonstrates a modern serverless architecture using:
 - **AWS IAM**: Security policies and roles
 - **Amazon CloudWatch**: Monitoring and logging
 
-  ![Architecture Diagram](https://drive.google.com/file/d/14Qfg3Jnn0FTJj-D1A4CjibQJgOEvsYZY/view?usp=drivesdk)
+  ![Architecture Diagram](./Image/Diagram.png)
 
 ## 📁 Project Structure
 
