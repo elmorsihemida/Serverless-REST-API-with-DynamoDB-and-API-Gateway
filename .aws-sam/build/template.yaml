@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless REST API with DynamoDB and API Gateway
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.12
+    Environment:
+      Variables:
+        TABLE_NAME:
+          Ref: TodoTable
+        CORS_ORIGIN: '*'
+  Api:
+    Cors:
+      AllowMethods: '''GET,POST,PUT,DELETE,OPTIONS'''
+      AllowHeaders: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+      AllowOrigin: '''*'''
+Resources:
+  TodoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: todo-items
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  CreateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CreateTodoFunction
+      Handler: create_todo.lambda_handler
+      Events:
+        CreateTodo:
+          Type: Api
+          Properties:
+            Path: /todos
+            Method: post
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TodoTable
+    Metadata:
+      SamResourceId: CreateTodoFunction
+  GetTodosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetTodosFunction
+      Handler: get_todos.lambda_handler
+      Events:
+        GetTodos:
+          Type: Api
+          Properties:
+            Path: /todos
+            Method: get
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: TodoTable
+    Metadata:
+      SamResourceId: GetTodosFunction
+  GetTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetTodoFunction
+      Handler: get_todo.lambda_handler
+      Events:
+        GetTodo:
+          Type: Api
+          Properties:
+            Path: /todos/{id}
+            Method: get
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: TodoTable
+    Metadata:
+      SamResourceId: GetTodoFunction
+  UpdateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: UpdateTodoFunction
+      Handler: update_todo.lambda_handler
+      Events:
+        UpdateTodo:
+          Type: Api
+          Properties:
+            Path: /todos/{id}
+            Method: put
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TodoTable
+    Metadata:
+      SamResourceId: UpdateTodoFunction
+  DeleteTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: DeleteTodoFunction
+      Handler: delete_todo.lambda_handler
+      Events:
+        DeleteTodo:
+          Type: Api
+          Properties:
+            Path: /todos/{id}
+            Method: delete
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TodoTable
+    Metadata:
+      SamResourceId: DeleteTodoFunction
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Sub: ${AWS::StackName}-frontend-${AWS::AccountId}
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: FrontendBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: PublicReadGetObject
+          Effect: Allow
+          Principal: '*'
+          Action: s3:GetObject
+          Resource:
+            Fn::Sub: ${FrontendBucket}/*
+Outputs:
+  TodoApiUrl:
+    Description: API Gateway endpoint URL for Prod stage
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-TodoApiUrl
+  FrontendUrl:
+    Description: Frontend S3 website URL
+    Value:
+      Fn::GetAtt:
+      - FrontendBucket
+      - WebsiteURL
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-FrontendUrl
+  TableName:
+    Description: DynamoDB table name
+    Value:
+      Ref: TodoTable
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-TableName

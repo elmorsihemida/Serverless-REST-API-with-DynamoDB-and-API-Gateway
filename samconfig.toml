@@ -1,0 +1,32 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "serverless-todo-api"
+s3_bucket = ""
+s3_prefix = "serverless-todo-api"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+disable_rollback = false
+parameter_overrides = ""
+image_repositories = []
+confirm_changeset = true
+resolve_s3 = true
+fail_on_empty_changeset = false
+
+[default.build]
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.local_start_api]
+[default.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[default.local_start_lambda]
+[default.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[default.local_invoke]
+[default.local_invoke.parameters]
+warm_containers = "EAGER"

@@ -1,0 +1,154 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless REST API with DynamoDB and API Gateway
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.12
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref TodoTable
+        CORS_ORIGIN: '*'
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+
+Resources:
+  # DynamoDB Table
+  TodoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: todo-items
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # Lambda Functions (API Gateway will be created automatically)
+  CreateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/
+      Handler: create_todo.lambda_handler
+      Events:
+        CreateTodo:
+          Type: Api
+          Properties:
+            Path: /todos
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TodoTable
+
+  GetTodosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/
+      Handler: get_todos.lambda_handler
+      Events:
+        GetTodos:
+          Type: Api
+          Properties:
+            Path: /todos
+            Method: get
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TodoTable
+
+  GetTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/
+      Handler: get_todo.lambda_handler
+      Events:
+        GetTodo:
+          Type: Api
+          Properties:
+            Path: /todos/{id}
+            Method: get
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TodoTable
+
+  UpdateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/
+      Handler: update_todo.lambda_handler
+      Events:
+        UpdateTodo:
+          Type: Api
+          Properties:
+            Path: /todos/{id}
+            Method: put
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TodoTable
+
+  DeleteTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/
+      Handler: delete_todo.lambda_handler
+      Events:
+        DeleteTodo:
+          Type: Api
+          Properties:
+            Path: /todos/{id}
+            Method: delete
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TodoTable
+
+  # S3 Bucket for Frontend
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-frontend-${AWS::AccountId}"
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  # S3 Bucket Policy
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub "${FrontendBucket}/*"
+
+Outputs:
+  TodoApiUrl:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+    Export:
+      Name: !Sub "${AWS::StackName}-TodoApiUrl"
+
+  FrontendUrl:
+    Description: "Frontend S3 website URL"
+    Value: !GetAtt FrontendBucket.WebsiteURL
+    Export:
+      Name: !Sub "${AWS::StackName}-FrontendUrl"
+
+  TableName:
+    Description: "DynamoDB table name"
+    Value: !Ref TodoTable
+    Export:
+      Name: !Sub "${AWS::StackName}-TableName"

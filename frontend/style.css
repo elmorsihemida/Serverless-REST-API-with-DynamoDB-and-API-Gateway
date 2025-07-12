@@ -1,0 +1,380 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* Todo Form */
+.todo-form {
+    padding: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.todo-form h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.todo-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.todo-form input,
+.todo-form textarea {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.todo-form input:focus,
+.todo-form textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.todo-form button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.todo-form button:hover {
+    transform: translateY(-2px);
+}
+
+/* Todo List */
+.todo-list {
+    padding: 30px;
+}
+
+.todo-list h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.todo-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.todo-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.todo-item.completed {
+    background: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.todo-item.completed .todo-title {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+.todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.todo-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.todo-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-edit:hover {
+    background: #e0a800;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+.btn-complete {
+    background: #28a745;
+    color: white;
+}
+
+.btn-complete:hover {
+    background: #218838;
+}
+
+.todo-description {
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.todo-meta {
+    font-size: 0.9em;
+    color: #999;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal input,
+.modal textarea {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-buttons button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-buttons button[type="submit"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.modal-buttons button[type="button"] {
+    background: #6c757d;
+    color: white;
+}
+
+.modal-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.empty-state h3 {
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+    }
+    
+    header {
+        padding: 20px;
+    }
+    
+    header h1 {
+        font-size: 2em;
+    }
+    
+    .todo-form,
+    .todo-list {
+        padding: 20px;
+    }
+    
+    .todo-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .todo-actions {
+        align-self: flex-start;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+}

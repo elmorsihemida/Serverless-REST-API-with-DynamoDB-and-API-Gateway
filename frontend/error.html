@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        .error-message {
+            font-size: 1.5rem;
+            margin: 20px 0;
+        }
+        .home-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .home-link:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <p class="error-message">Page not found</p>
+        <a href="/" class="home-link">Go back to Todo App</a>
+    </div>
+</body>
+</html>
